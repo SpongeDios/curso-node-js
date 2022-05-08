@@ -5,7 +5,6 @@ const archivo = './db/data.json'
 const guardarDB = (data) => {
 
     fs.writeFileSync(archivo, JSON.stringify(data))
-    console.log('Base de datos actualizada'.green);
 }
 
 const leerDB = () => {

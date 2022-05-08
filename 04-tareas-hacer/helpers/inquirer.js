@@ -84,8 +84,80 @@ const pausa = async() => {
     await inquirer.prompt(question);
 }
 
+
+const listadoTareasBorrar = async (tareas =[]) => {
+
+    const choices = tareas.map((tarea, index) => {
+        return {
+            value: tarea.id,
+            name: `${index+1}.`.green + `${tarea.desc}`
+        }
+    })
+
+    choices.unshift({
+        value: '0',
+        name: `${'0'.green}.Volver`
+    })
+
+    const preguntas = [
+        {
+            type: 'list',
+            name: 'id',
+            message: 'Seleccione una tarea para borrar',
+            choices
+        }
+    ]
+
+    const { id } = await inquirer.prompt(preguntas)
+    return id
+}
+
+const mostrarListadoChecklist = async (tareas =[]) => {
+
+    const choices = tareas.map((tarea, index) => {
+        return {
+            value: tarea.id,
+            name: `${index+1}.`.green + `${tarea.desc}`,
+            checked: (tarea.completadoEn) ? true : false
+        }
+    })
+
+    const pregunta = [
+        {
+            type: 'checkbox',
+            name: 'ids',
+            message: 'Selecciones',
+            choices
+        }
+    ]
+
+    const { ids } = await inquirer.prompt(pregunta)
+    return ids
+}
+
+
+
+
+
+const confirmar = async (message) => {
+    const question = [
+        {
+            type: 'confirm',
+            name: 'ok',
+            message
+        }
+    ]
+
+    const {ok} = await inquirer.prompt(question) 
+    return ok
+}
+
+
 module.exports = {
     inquirerMenu,
     pausa,
-    leerInput
+    leerInput,
+    listadoTareasBorrar,
+    confirmar,
+    mostrarListadoChecklist
 }
