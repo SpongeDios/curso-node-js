@@ -1,5 +1,8 @@
-const {leerInput, inquirerMenu, pausa} = require('./helpers/inquirer.js');
+const {leerInput, inquirerMenu, pausa, listarLugares} = require('./helpers/inquirer.js');
 const Busquedas = require('./models/busquedas.js');
+
+
+console.log(process.env.MAPBOX_KEY);
 
 const main = async() => {
 
@@ -14,19 +17,35 @@ const main = async() => {
             case 1:
 
                 const ciudad = await leerInput('Ingrese la ciudad a buscar: ')
-                const cuidadResponse = await busquedas.buscarCiudad(ciudad)
-                console.log(cuidadResponse);
+                const lugares = await busquedas.buscarCiudad(ciudad)
+                const id = await listarLugares(lugares)
 
+                if (id === '0') {
+                    break
+                }
+
+
+                const lugarSeleccionado = lugares.find(lugar => lugar.id === id)
+                busquedas.agregarHistorial(lugarSeleccionado.nombre)
+
+
+                const clima = await busquedas.climaLugar(lugarSeleccionado.lat, lugarSeleccionado.lng)
+                console.clear();
                 console.log("\nInformacion de la ciudad\n".green.bold);
-                console.log('Ciudad');
-                console.log('Lat');
-                console.log('Lng');
-                console.log('Temperatura');
-                console.log('Minima');
-                console.log('Maxima');
+                console.log('Ciudad:', lugarSeleccionado.nombre)
+                console.log('Lat:', lugarSeleccionado.lat)
+                console.log('Lng:', lugarSeleccionado.lng)
+                console.log('Temperatura', clima.actual);
+                console.log('Minima', clima.minima);
+                console.log('Maxima', clima.maxima);
+                console.log('Como esta el clima?', clima.descripcion.green);
                 break
             case 2:
-                console.log('Historial')
+                //reemplazar el historial capitalizado
+                busquedas.historialCapitalizado.forEach((lugar, id) => {
+                    const idx = `${id + 1}`.green
+                    console.log(`${idx} - ${lugar}`)
+                })
                 break
             case 0:
                 console.log('Listar tareas completadas')
