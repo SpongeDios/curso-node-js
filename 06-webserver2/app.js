@@ -1,12 +1,20 @@
+require('dotenv').config();
+
 const express = require('express')
 const app = express()
-const port = 8080
+const hbs = require('hbs')
+const port = process.env.PORT
+
+app.set('view engine', 'hbs')
+hbs.registerPartials(__dirname + '/views/partials')
 
 app.use(express.static('public'))
-app.set('view engine', 'hbs')
 
 app.get('/', (req, res) => {
-    res.render('home')
+    res.render('home', {
+        nombre: "Hector Alvarado",
+        curso: 'Curso de Node'
+    })
 })
 
 app.get('/generic', (req,res) => {
